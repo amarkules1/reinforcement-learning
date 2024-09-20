@@ -1,0 +1,24 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[[source]]
+url = "https://download.pytorch.org/whl/cu124/"
+verify_ssl = false
+name = "pytorch"
+
+[packages]
+scikit-learn = "*"
+numpy = "*"
+sqlalchemy = "*"
+ipykernel = "*"
+python-dotenv = "*"
+torch = {index = "pytorch", version = "*"}
+torchvision = {index = "pytorch", version = "*"}
+torchaudio = {index = "pytorch", version = "*"}
+gymnasium = "*"
+matplotlib = "*"
+flappy-bird-gymnasium = "*"
+tensorflow = "*"
+pyyaml = "*"
