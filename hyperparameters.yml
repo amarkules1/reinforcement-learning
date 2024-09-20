@@ -109,6 +109,7 @@ flappybird5:
   use_cuda: False
   max_iter: 10000000
   rewards_to_average: 1
+  no_graph: True
 flappybird6:
   env_id: FlappyBird-v0
   replay_memory_size: 100000

@@ -53,6 +53,7 @@ class Agent:
             self.device = torch.device('cuda' if self.use_cuda else 'cpu')
             self.max_iter = self.hyperparams.get('max_iter', 1000000)
             self.rewards_to_average = self.hyperparams.get('rewards_to_average', 1)
+            self.no_graph = self.hyperparams.get('no_graph', False)
 
             self.loss_fn = nn.MSELoss()  # loss function (mean squared error)
             self.optimizer = None
@@ -133,12 +134,12 @@ class Agent:
                     step_count += 1
 
                 state = new_state
-
-            rewards_per_episode.append(episode_reward)
+            if is_train and not self.no_graph:
+                rewards_per_episode.append(episode_reward)
 
             # Save model when new best reward is obtained.
             if is_train:
-                last_n_reward_avg = np.mean(rewards_per_episode[-self.rewards_to_average:])
+                last_n_reward_avg = episode_reward if self.no_graph or self.rewards_to_average < 2 else np.mean(rewards_per_episode[-self.rewards_to_average:])
                 if last_n_reward_avg > best_reward:
                     log_message = f"{datetime.now().strftime(DATE_FORMAT)}: New best avg reward {last_n_reward_avg:0.1f} ({(last_n_reward_avg - best_reward) / best_reward * 100:+.1f}%) at episode {episode}, saving model..."
                     print(log_message)
@@ -150,7 +151,7 @@ class Agent:
 
                 # Update graph every x seconds
                 current_time = datetime.now()
-                if current_time - last_graph_update_time > timedelta(seconds=10):
+                if not self.no_graph and current_time - last_graph_update_time > timedelta(seconds=10):
                     self.save_graph(rewards_per_episode, epsilon_history)
                     last_graph_update_time = current_time
 
@@ -163,7 +164,8 @@ class Agent:
                     # in this implementation we're using a geometric decay for epsilon (taking the product of epsilon_decay and current epsilon)
                     # a linear decay is another option, decreasing epsilon by a fixed amount each episode (adjust epsilon_decay hyperparameter accordingly)
                     epsilon = max(epsilon * self.epsilon_decay, self.epsilon_min)
-                    epsilon_history.append(epsilon)
+                    if not self.no_graph:
+                        epsilon_history.append(epsilon)
 
                     # Copy policy network to target network after a certain number of steps
                     if step_count > self.network_sync_rate:

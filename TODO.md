@@ -1,6 +1,8 @@
 - [x] Add max iteration parameter
 - [x] Add cuda parameter
 - [x] make model saving happen based on average reward over last N episodes
+- [ ] refactor for smaller methods
+- [x] performance optimization - slows down gradually, probably because reward array grows
 - [ ] give all parameters defaults or throw descriptive error
 - [ ] add documentation to readme
 - [ ] Experiment with more environments
