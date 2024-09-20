@@ -107,7 +107,8 @@ flappybird5:
     use_lidar: False
   enable_double_dqn: True
   use_cuda: False
-  max_iter: 3000000
+  max_iter: 10000000
+  rewards_to_average: 1
 flappybird6:
   env_id: FlappyBird-v0
   replay_memory_size: 100000

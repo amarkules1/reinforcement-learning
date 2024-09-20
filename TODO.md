@@ -1,5 +1,8 @@
 - [x] Add max iteration parameter
 - [x] Add cuda parameter
+- [x] make model saving happen based on average reward over last N episodes
+- [ ] give all parameters defaults or throw descriptive error
+- [ ] add documentation to readme
 - [ ] Experiment with more environments
 - [ ] Allow for training to be picked up from a checkpoint
 - 

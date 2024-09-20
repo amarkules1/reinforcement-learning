@@ -52,6 +52,7 @@ class Agent:
             self.use_cuda = self.hyperparams.get('use_cuda', torch.cuda.is_available())
             self.device = torch.device('cuda' if self.use_cuda else 'cpu')
             self.max_iter = self.hyperparams.get('max_iter', 1000000)
+            self.rewards_to_average = self.hyperparams.get('rewards_to_average', 1)
 
             self.loss_fn = nn.MSELoss()  # loss function (mean squared error)
             self.optimizer = None
@@ -137,14 +138,15 @@ class Agent:
 
             # Save model when new best reward is obtained.
             if is_train:
-                if episode_reward > best_reward:
-                    log_message = f"{datetime.now().strftime(DATE_FORMAT)}: New best reward {episode_reward:0.1f} ({(episode_reward - best_reward) / best_reward * 100:+.1f}%) at episode {episode}, saving model..."
+                last_n_reward_avg = np.mean(rewards_per_episode[-self.rewards_to_average:])
+                if last_n_reward_avg > best_reward:
+                    log_message = f"{datetime.now().strftime(DATE_FORMAT)}: New best avg reward {last_n_reward_avg:0.1f} ({(last_n_reward_avg - best_reward) / best_reward * 100:+.1f}%) at episode {episode}, saving model..."
                     print(log_message)
                     with open(self.LOG_FILE, 'a') as file:
                         file.write(log_message + '\n')
 
                     torch.save(policy_net.state_dict(), self.MODEL_FILE)
-                    best_reward = episode_reward
+                    best_reward = last_n_reward_avg
 
                 # Update graph every x seconds
                 current_time = datetime.now()
