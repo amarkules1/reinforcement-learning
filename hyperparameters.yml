@@ -38,6 +38,8 @@ flappybird1:
   env_make_params:
     use_lidar: False
   enable_double_dqn: True
+  use_cuda: False
+  max_iter: 3000000
 flappybird2:
   env_id: FlappyBird-v0
   replay_memory_size: 100000
@@ -53,6 +55,8 @@ flappybird2:
   env_make_params:
     use_lidar: False
   enable_double_dqn: True
+  use_cuda: False
+  max_iter: 3000000
 flappybird3:
   env_id: FlappyBird-v0
   replay_memory_size: 100000
@@ -68,6 +72,8 @@ flappybird3:
   env_make_params:
     use_lidar: False
   enable_double_dqn: True
+  use_cuda: False
+  max_iter: 3000000
 flappybird4:
   env_id: FlappyBird-v0
   replay_memory_size: 100000
@@ -83,6 +89,8 @@ flappybird4:
   env_make_params:
     use_lidar: False
   enable_double_dqn: True
+  use_cuda: False
+  max_iter: 3000000
 flappybird5:
   env_id: FlappyBird-v0
   replay_memory_size: 100000
@@ -98,6 +106,8 @@ flappybird5:
   env_make_params:
     use_lidar: False
   enable_double_dqn: True
+  use_cuda: False
+  max_iter: 3000000
 flappybird6:
   env_id: FlappyBird-v0
   replay_memory_size: 100000
@@ -113,3 +123,5 @@ flappybird6:
   env_make_params:
     use_lidar: False
   enable_double_dqn: True
+  use_cuda: False
+  max_iter: 3000000

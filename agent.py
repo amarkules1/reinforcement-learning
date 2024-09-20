@@ -27,12 +27,9 @@ os.makedirs(RUNS_DIR, exist_ok=True)
 
 matplotlib.use('Agg')
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
 
 class Agent:
     def __init__(self, hyperparam_option):
-        print(device.type)
         with open('hyperparameters.yml', 'r') as f:
             all_hyperparams = yaml.safe_load(f)
             self.hyperparams = all_hyperparams[hyperparam_option]
@@ -52,6 +49,9 @@ class Agent:
             self.fc1_nodes = self.hyperparams['fc1_nodes']
             self.env_make_params = self.hyperparams.get('env_make_params', {})
             self.enable_double_dqn = self.hyperparams.get('enable_double_dqn', False)
+            self.use_cuda = self.hyperparams.get('use_cuda', torch.cuda.is_available())
+            self.device = torch.device('cuda' if self.use_cuda else 'cpu')
+            self.max_iter = self.hyperparams.get('max_iter', 1000000)
 
             self.loss_fn = nn.MSELoss()  # loss function (mean squared error)
             self.optimizer = None
@@ -76,12 +76,12 @@ class Agent:
         num_states = env.observation_space.shape[0]  # number of input nodes
         rewards_per_episode = []  # track rewards
 
-        policy_net = DQN(num_states, num_actions, self.fc1_nodes).to(device)  # the policy network
+        policy_net = DQN(num_states, num_actions, self.fc1_nodes).to(self.device)  # the policy network
 
         if is_train:
             memory = ReplayMemory(capacity=10000)
             epsilon = self.epsilon_init
-            target_net = DQN(num_states, num_actions, self.fc1_nodes).to(device)
+            target_net = DQN(num_states, num_actions, self.fc1_nodes).to(self.device)
             target_net.load_state_dict(policy_net.state_dict())
 
             # List to keep track of epsilon decay
@@ -98,10 +98,10 @@ class Agent:
             policy_net.load_state_dict(torch.load(self.MODEL_FILE))
             policy_net.eval()
 
-        for episode in itertools.count():
+        for episode in range(self.max_iter):
             state, _ = env.reset()
             # convert anything going into the network to a tensor
-            state = torch.tensor(state, dtype=torch.float, device=device).to(device)
+            state = torch.tensor(state, dtype=torch.float, device=self.device).to(self.device)
 
             episode_reward = 0.0
             done = False
@@ -110,7 +110,7 @@ class Agent:
                 if is_train and random.random() < epsilon:
                     # random action
                     action = env.action_space.sample()
-                    action = torch.tensor(action, dtype=torch.int64, device=device)
+                    action = torch.tensor(action, dtype=torch.int64, device=self.device)
                 else:
                     with torch.no_grad():
                         # action with best Q value
@@ -123,8 +123,8 @@ class Agent:
                 episode_reward += reward
 
                 # convert new state and reward to tensors on device
-                new_state = torch.tensor(new_state, dtype=torch.float, device=device)
-                reward = torch.tensor(reward, dtype=torch.float, device=device)
+                new_state = torch.tensor(new_state, dtype=torch.float, device=self.device)
+                reward = torch.tensor(reward, dtype=torch.float, device=self.device)
 
                 if is_train:
                     memory.append((state, action, new_state, reward, done))
@@ -220,7 +220,7 @@ class Agent:
         actions = torch.stack(actions)
         new_states = torch.stack(new_states)
         rewards = torch.stack(rewards)
-        dones = torch.tensor(dones).float().to(device)
+        dones = torch.tensor(dones).float().to(self.device)
 
         with torch.no_grad():
             if self.enable_double_dqn:

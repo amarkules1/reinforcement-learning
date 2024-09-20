@@ -1,0 +1,5 @@
+- [x] Add max iteration parameter
+- [x] Add cuda parameter
+- [ ] Experiment with more environments
+- [ ] Allow for training to be picked up from a checkpoint
+- 
