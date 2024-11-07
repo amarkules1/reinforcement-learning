@@ -146,7 +146,8 @@ class Agent:
             if is_train:
                 last_n_reward_avg = episode_reward if self.no_graph or self.rewards_to_average < 2 else np.mean(rewards_per_episode[-self.rewards_to_average:])
                 if last_n_reward_avg > best_reward:
-                    log_message = f"{datetime.now().strftime(DATE_FORMAT)}: New best avg reward {last_n_reward_avg:0.1f} ({(last_n_reward_avg - best_reward) / best_reward * 100:+.1f}%) at episode {episode}, saving model..."
+                    log_message = (f"{datetime.now().strftime(DATE_FORMAT)}: New best avg reward {last_n_reward_avg:0.1f}"
+                                   f" ({(last_n_reward_avg - best_reward) / best_reward * 100:+.1f}%) at episode {episode}, saving model...")
                     print(log_message)
                     with open(self.LOG_FILE, 'a') as file:
                         file.write(log_message + '\n')

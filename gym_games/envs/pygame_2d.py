@@ -135,7 +135,7 @@ class Car:
 
 
 class PyGame2D:
-    def __init__(self, mode=0):
+    def __init__(self, mode=0, step_ct_penalty=0):
         pygame.init()
         self.screen = pygame.display.set_mode((screen_width, screen_height))
         self.clock = pygame.time.Clock()
@@ -144,8 +144,11 @@ class PyGame2D:
         self.car = Car('car.png', self.map_file, [700, 650])
         self.game_speed = 60
         self.mode = mode
+        self.step_ct = 0
+        self.step_ct_penalty = step_ct_penalty
 
     def action(self, action):
+        self.step_ct += 1
         if action == 0:
             self.car.speed += 2
         if action == 1:
@@ -174,7 +177,7 @@ class PyGame2D:
 
         elif self.car.goal:
             reward = 10000
-        return reward
+        return reward - (self.step_ct * 0.01)
 
     def is_done(self):
         if not self.car.is_alive or self.car.goal:
