@@ -139,6 +139,8 @@ cargame1:
   discount_factor_g: 0.99
   stop_on_reward: 10000
   fc1_nodes: 512
+  env_make_params:
+    use_lidar: False
   enable_double_dqn: True
   use_cuda: False
   max_iter: 30000

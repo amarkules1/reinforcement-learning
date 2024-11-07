@@ -17,6 +17,8 @@ import argparse
 import itertools
 
 import flappy_bird_gymnasium
+
+import gym_games
 import os
 
 DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
@@ -72,7 +74,7 @@ class Agent:
             with open(self.LOG_FILE, 'w') as file:
                 file.write(log_message + '\n')
         # run the agent
-        env = gym.make(self.env_id, render_mode='human' if render else None, **self.env_make_params)
+        env = gym.make(self.env_id, **self.env_make_params)
 
         num_actions = env.action_space.n  # number of output options
         num_states = env.observation_space.shape[0]  # number of input nodes
@@ -134,6 +136,9 @@ class Agent:
                     step_count += 1
 
                 state = new_state
+
+                if render:
+                    env.render()
             if is_train and not self.no_graph:
                 rewards_per_episode.append(episode_reward)
 
