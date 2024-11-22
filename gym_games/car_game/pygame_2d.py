@@ -140,8 +140,8 @@ class PyGame2D:
         self.screen = pygame.display.set_mode((screen_width, screen_height))
         self.clock = pygame.time.Clock()
         self.font = pygame.font.SysFont("Arial", 30)
-        self.map_file = 'map.png' if mode == 0 else 'map-black.png'
-        self.car = Car('car.png', self.map_file, [700, 650])
+        self.map_file = 'img/map.png' if mode == 0 else 'img/map-black.png'
+        self.car = Car('img/car.png', self.map_file, [700, 650])
         self.game_speed = 60
         self.mode = mode
         self.step_ct = 0
