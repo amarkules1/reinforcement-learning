@@ -65,6 +65,8 @@ class Agent:
             self.GRAPH_FILE = os.path.join(RUNS_DIR, f'{self.hyperparam_option}.png')
 
     def run(self, is_train, render=False):
+        if not is_train:
+            self.env_make_params['render_mode'] = 'human'
         if is_train:
             start_time = datetime.now()
             last_graph_update_time = start_time
@@ -258,7 +260,7 @@ if __name__ == '__main__':
     parser.add_argument('model', help='')
     parser.add_argument('--train', help='Training mode', action='store_true')
     args = parser.parse_args()
-
+    
     dql = Agent(hyperparam_option=args.model)
 
     if args.train:
